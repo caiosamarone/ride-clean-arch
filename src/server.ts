@@ -1,5 +1,5 @@
 import { pgp } from '../database/pg-promise';
-import { app } from './main';
+import { app } from './infra/main';
 
 const PORT = 3000;
 

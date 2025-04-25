@@ -1,11 +1,10 @@
-import { UserTypeEnum } from '../entity/user';
-import { Ride, RideStatusEnum } from '../entity/ride';
-
+import { Ride, RideStatusEnum } from '../../domain/entity/ride';
+import { UserTypeEnum } from '../../domain/entity/user';
+import { RideRepository } from '../../infra/repository/ride-repository';
+import { UserRepository } from '../../infra/repository/user-repository';
 import { NotFoundError } from '../errors/not-found';
 import { UserNotPassengerError } from '../errors/user-not-passenger';
 import { UserWithActiveRide } from '../errors/user-with-active-ride';
-import { RideRepository } from '../repository/ride-repository';
-import { UserRepository } from '../repository/user-repository';
 
 export type RequestRideInput = {
   passengerId: string;

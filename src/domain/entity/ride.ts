@@ -1,4 +1,4 @@
-import { ValidationError } from '../errors/validation-error';
+import { ValidationError } from '../../application/errors/validation-error';
 
 export enum RideStatusEnum {
   REQUESTED = 'REQUESTED',

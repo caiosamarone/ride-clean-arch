@@ -1,4 +1,4 @@
-import { PgPromiseUserRepository } from '../repository/pg-promise-user-repository';
+import { PgPromiseUserRepository } from '../../infra/repository/pg-promise-user-repository';
 import { CreateUserUseCase } from '../use-case/create-user-use-case';
 
 export function makeCreateUserUseCaseFactory(): CreateUserUseCase {

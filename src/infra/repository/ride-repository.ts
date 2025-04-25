@@ -1,4 +1,4 @@
-import { Ride } from '../entity/ride';
+import { Ride } from '../../domain/entity/ride';
 
 export type CreateRideInput = {
   ride: Ride;

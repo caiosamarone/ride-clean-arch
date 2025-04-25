@@ -1,7 +1,6 @@
-import { User } from '../entity/user';
-
+import { User } from '../../domain/entity/user';
+import { UserRepository } from '../../infra/repository/user-repository';
 import { UserAlreadyExists } from '../errors/user-already-exists';
-import { UserRepository } from '../repository/user-repository';
 
 export type CreateUserInput = {
   name: string;

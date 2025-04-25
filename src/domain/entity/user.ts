@@ -1,6 +1,6 @@
-import { InvalidCarPlate } from '../errors/invalid-car-plate';
-import { ValidationError } from '../errors/validation-error';
-import { validateCpf } from '../validateCpf';
+import { InvalidCarPlate } from '../../application/errors/invalid-car-plate';
+import { ValidationError } from '../../application/errors/validation-error';
+import { validateCpf } from '../../helpers/validate-cpf';
 
 export enum UserTypeEnum {
   PASSENGER = 'passenger',

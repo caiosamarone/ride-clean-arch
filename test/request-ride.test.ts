@@ -1,7 +1,8 @@
 import request from 'supertest';
-import { app } from '../src/main';
-import { CreateUserInput } from '../src/use-case/create-user-use-case';
+import { app } from '../src/infra/main';
+
 import { server } from '../src/server';
+import { CreateUserInput } from '../src/application/use-case/create-user-use-case';
 
 function makePassenger(
   params?: Partial<CreateUserInput>

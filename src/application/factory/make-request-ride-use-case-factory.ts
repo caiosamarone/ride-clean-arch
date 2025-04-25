@@ -1,5 +1,5 @@
-import { PgPromiseRideRepository } from '../repository/pg-promise-ride-repository';
-import { PgPromiseUserRepository } from '../repository/pg-promise-user-repository';
+import { PgPromiseRideRepository } from '../../infra/repository/pg-promise-ride-repository';
+import { PgPromiseUserRepository } from '../../infra/repository/pg-promise-user-repository';
 import { RequestRideUseCase } from '../use-case/request-ride-use-case';
 
 export function makeRequestRideUseCaseFactory(): RequestRideUseCase {

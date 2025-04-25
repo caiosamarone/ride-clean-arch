@@ -1,7 +1,7 @@
-import { db } from '../../database/pg-promise';
+import { db } from '../../../database/pg-promise';
 
-import { Ride, RideStatusEnum } from '../entity/ride';
-import { NotFoundError } from '../errors/not-found';
+import { Ride, RideStatusEnum } from '../../domain/entity/ride';
+import { NotFoundError } from '../../application/errors/not-found';
 import { CreateRideInput, RideRepository } from './ride-repository';
 
 export class PgPromiseRideRepository implements RideRepository {

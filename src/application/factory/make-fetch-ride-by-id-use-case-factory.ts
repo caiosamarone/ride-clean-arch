@@ -1,5 +1,5 @@
-import { PgPromiseRideRepository } from '../repository/pg-promise-ride-repository';
-import { PgPromiseUserRepository } from '../repository/pg-promise-user-repository';
+import { PgPromiseRideRepository } from '../../infra/repository/pg-promise-ride-repository';
+import { PgPromiseUserRepository } from '../../infra/repository/pg-promise-user-repository';
 import { FecthRideByIdUseCase } from '../use-case/fetch-ride-by-id-use-case';
 
 export function makeFetchRideByIdUseCaseFactory(): FecthRideByIdUseCase {

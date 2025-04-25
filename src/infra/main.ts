@@ -1,16 +1,15 @@
 import express from 'express';
-import { ValidationError } from './errors/validation-error';
-import { UserAlreadyExists } from './errors/user-already-exists';
-import { InvalidCarPlate } from './errors/invalid-car-plate';
-import { UserWithActiveRide } from './errors/user-with-active-ride';
-import { UserNotPassengerError } from './errors/user-not-passenger';
-import { NotFoundError } from './errors/not-found';
-
-import { makeRequestRideUseCaseFactory } from './factory/make-request-ride-use-case-factory';
-import { makeFetchRideByIdUseCaseFactory } from './factory/make-fetch-ride-by-id-use-case-factory';
-import { makeCreateUserUseCaseFactory } from './factory/make-create-user-use-case-factory';
-import { makeFetchUserByIdUseCaseFactory } from './factory/make-fetch-user-by-id-use-case-factory';
-import { CreateUserInput } from './use-case/create-user-use-case';
+import { ValidationError } from '../application/errors/validation-error';
+import { UserAlreadyExists } from '../application/errors/user-already-exists';
+import { InvalidCarPlate } from '../application/errors/invalid-car-plate';
+import { UserWithActiveRide } from '../application/errors/user-with-active-ride';
+import { UserNotPassengerError } from '../application/errors/user-not-passenger';
+import { NotFoundError } from '../application/errors/not-found';
+import { makeCreateUserUseCaseFactory } from '../application/factory/make-create-user-use-case-factory';
+import { makeFetchRideByIdUseCaseFactory } from '../application/factory/make-fetch-ride-by-id-use-case-factory';
+import { makeFetchUserByIdUseCaseFactory } from '../application/factory/make-fetch-user-by-id-use-case-factory';
+import { makeRequestRideUseCaseFactory } from '../application/factory/make-request-ride-use-case-factory';
+import { CreateUserInput } from '../application/use-case/create-user-use-case';
 
 const app = express();
 app.use(express.json());

@@ -1,7 +1,7 @@
-import { Ride, RideStatusEnum } from '../entity/ride';
+import { RideStatusEnum } from '../../domain/entity/ride';
+import { RideRepository } from '../../infra/repository/ride-repository';
+import { UserRepository } from '../../infra/repository/user-repository';
 import { NotFoundError } from '../errors/not-found';
-import { RideRepository } from '../repository/ride-repository';
-import { UserRepository } from '../repository/user-repository';
 
 export type FetchRideByIdInput = {
   rideId: string;

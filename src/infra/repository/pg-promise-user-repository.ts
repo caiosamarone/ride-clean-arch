@@ -1,6 +1,6 @@
-import { db } from '../../database/pg-promise';
+import { db } from '../../../database/pg-promise';
 
-import { User, UserTypeEnum } from '../entity/user';
+import { User, UserTypeEnum } from '../../domain/entity/user';
 import { UserRepository } from './user-repository';
 
 export class PgPromiseUserRepository implements UserRepository {

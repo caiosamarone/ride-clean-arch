@@ -1,5 +1,5 @@
-import { User } from '../entity/user';
-import { UserRepository } from '../repository/user-repository';
+import { User } from '../../domain/entity/user';
+import { UserRepository } from '../../infra/repository/user-repository';
 
 export type FecthRideByIdUseCaseOutput = {
   user: User;
