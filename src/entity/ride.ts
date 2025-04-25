@@ -38,7 +38,7 @@ export class Ride {
     readonly distance?: number
   ) {
     if (!passengerId) {
-      throw new ValidationError('Invalid pass enger ID');
+      throw new ValidationError('Invalid passenger ID');
     }
     if (!this.isValidLocation(from)) {
       throw new ValidationError('Invalid location');
