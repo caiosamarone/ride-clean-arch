@@ -1,7 +1,7 @@
-import pgp from 'pg-promise';
+import pgPromise from 'pg-promise';
 import { CONNECTION_STRING } from '../environment';
 
-const pgPromise = pgp();
-const db = pgPromise(CONNECTION_STRING);
+const pgp = pgPromise();
+const db = pgp(CONNECTION_STRING); // Substitua pela sua string de conexão
 
-export default db;
+export { db, pgp };

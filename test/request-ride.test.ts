@@ -1,6 +1,7 @@
-import axios from 'axios';
-
+import request from 'supertest';
+import { app } from '../src/main';
 import { CreateUserInput } from '../src/use-case/create-user-use-case';
+import { server } from '../src/server';
 
 function makePassenger(
   params?: Partial<CreateUserInput>
@@ -32,14 +33,15 @@ function makeDriver(
 }
 
 describe('request-ride', () => {
+  afterAll(() => {
+    server.close();
+  });
+
   it('Deve criar uma ride', async () => {
-    const response = await axios.post(
-      'http://localhost:3000/user',
-      makePassenger()
-    );
+    const response = await request(app).post('/user').send(makePassenger());
 
     const input = {
-      passengerId: response.data.id,
+      passengerId: response.body.id,
       from: {
         lat: -23.5505,
         long: -46.6333,
@@ -49,17 +51,14 @@ describe('request-ride', () => {
         long: -46.6332,
       },
     };
-    const result = await axios.post('http://localhost:3000/ride', input);
-    expect(result.data.rideId).toBeDefined();
+    const result = await request(app).post('/ride').send(input);
+    expect(result.body.rideId).toBeDefined();
   });
 
   it('Não deve criar uma ride se o passageiro já tiver uma ride em andamento', async () => {
-    const response = await axios.post(
-      'http://localhost:3000/user',
-      makePassenger()
-    );
+    const response = await request(app).post('/user').send(makePassenger());
     const inputRide1 = {
-      passengerId: response.data.id,
+      passengerId: response.body.id,
       from: {
         lat: -23.5505,
         long: -46.6333,
@@ -69,9 +68,9 @@ describe('request-ride', () => {
         long: -46.6332,
       },
     };
-    await axios.post('http://localhost:3000/ride', inputRide1);
+    await request(app).post('/ride').send(inputRide1);
     const inputRide2 = {
-      passengerId: response.data.id,
+      passengerId: response.body.id,
       from: {
         lat: -23.5505,
         long: -46.6333,
@@ -81,14 +80,9 @@ describe('request-ride', () => {
         long: -46.6332,
       },
     };
-    try {
-      await axios.post('http://localhost:3000/ride', inputRide2);
-    } catch (error: any) {
-      expect(error.response.status).toBe(429);
-      expect(error.response.data.message).toBe(
-        'User already has a ride in progress'
-      );
-    }
+    const result = await request(app).post('/ride').send(inputRide2);
+    expect(result.status).toBe(429);
+    expect(result.body.message).toBe('User already has a ride in progress');
   });
 
   it('Não deve criar uma ride se o passageiro não existir', async () => {
@@ -103,21 +97,15 @@ describe('request-ride', () => {
         long: -46.6332,
       },
     };
-    try {
-      await axios.post('http://localhost:3000/ride', input);
-    } catch (error: any) {
-      expect(error.response.status).toBe(404);
-      expect(error.response.data.message).toBe('User not found');
-    }
+    const result = await request(app).post('/ride').send(input);
+    expect(result.status).toBe(404);
+    expect(result.body.message).toBe('User not found');
   });
 
   it('Não deve criar uma ride se o passageiro nao for um passageiro', async () => {
-    const response = await axios.post(
-      'http://localhost:3000/user',
-      makeDriver()
-    );
+    const response = await request(app).post('/user').send(makeDriver());
     const input = {
-      passengerId: response.data.id,
+      passengerId: response.body.id,
       from: {
         lat: -23.5505,
         long: -46.6333,
@@ -127,11 +115,8 @@ describe('request-ride', () => {
         long: -46.6332,
       },
     };
-    try {
-      await axios.post('http://localhost:3000/ride', input);
-    } catch (error: any) {
-      expect(error.response.status).toBe(429);
-      expect(error.response.data.message).toBe('User is not a passenger');
-    }
+    const result = await request(app).post('/ride').send(input);
+    expect(result.status).toBe(429);
+    expect(result.body.message).toBe('User is not a passenger');
   });
 });

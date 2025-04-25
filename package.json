@@ -1,13 +1,13 @@
 {
   "name": "ride",
   "version": "1.0.0",
-  "main": "./src/main.ts",
+  "main": "./src/server.ts",
   "license": "MIT",
   "scripts": {
     "docker:start": "docker compose up -d",
     "docker:stop": "docker compose stop",
     "docker:clean": "docker compose rm -fsv",
-    "start": "nodemon --ext ts --exec ts-node src/main.ts",
+    "start": "nodemon --ext ts --exec ts-node src/server.ts",
     "test": "jest --detectOpenHandles"
   },
   "dependencies": {
@@ -23,6 +23,8 @@
     "typescript": "^5.2.2"
   },
   "devDependencies": {
-    "prettier": "^3.5.3"
+    "@types/supertest": "^6.0.3",
+    "prettier": "^3.5.3",
+    "supertest": "^7.1.0"
   }
 }

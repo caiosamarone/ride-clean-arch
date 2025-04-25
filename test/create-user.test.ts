@@ -1,7 +1,13 @@
-import axios from 'axios';
+import request from 'supertest';
+import { app } from '../src/main';
 import { CreateUserInput } from '../src/use-case/create-user-use-case';
+import { server } from '../src/server';
 
 describe('create-user', () => {
+  afterAll(() => {
+    server.close();
+  });
+
   it('Deve criar uma conta de passageiro', async () => {
     const input: Partial<CreateUserInput> = {
       name: 'John Doe',
@@ -11,12 +17,10 @@ describe('create-user', () => {
       isPassenger: true,
       password: 'admin',
     };
-    const result = await axios.post('http://localhost:3000/user', input);
-    const account = await axios.get(
-      `http://localhost:3000/user/${result.data.id}`
-    );
-    expect(result.data.id).toEqual(expect.any(String));
-    expect(account.data.name).toBe(input.name);
+    const result = await request(app).post('/user').send(input);
+    const account = await request(app).get(`/user/${result.body.id}`);
+    expect(result.body.id).toEqual(expect.any(String));
+    expect(account.body.name).toBe(input.name);
   });
 
   it('Deve criar uma conta de motorista', async () => {
@@ -29,12 +33,10 @@ describe('create-user', () => {
       isPassenger: false,
       password: 'admin',
     };
-    const result = await axios.post('http://localhost:3000/user', input);
-    const response = await axios.get(
-      `http://localhost:3000/user/${result.data.id}`
-    );
-    expect(result.data.id).toEqual(expect.any(String));
-    expect(response.data.name).toBe(input.name);
+    const result = await request(app).post('/user').send(input);
+    const response = await request(app).get(`/user/${result.body.id}`);
+    expect(result.body.id).toEqual(expect.any(String));
+    expect(response.body.name).toBe(input.name);
   });
 
   it('Não Deve criar uma conta de motorista sem placa', async () => {
@@ -47,11 +49,8 @@ describe('create-user', () => {
       password: 'admin',
     };
 
-    try {
-      await axios.post('http://localhost:3000/user', input);
-    } catch (error: any) {
-      expect(error.response.status).toBe(429);
-      expect(error.response.data.message).toBe('Invalid car plate');
-    }
+    const result = await request(app).post('/user').send(input);
+    expect(result.status).toBe(429);
+    expect(result.body.message).toBe('Invalid car plate');
   });
 });
