@@ -1,4 +1,4 @@
-import { db } from '../../../database/pg-promise';
+import { db } from '../database/pg-promise';
 
 import { Ride, RideStatusEnum } from '../../domain/entity/ride';
 import { NotFoundError } from '../../application/errors/not-found';
