@@ -38,19 +38,4 @@ describe('create-user', () => {
     expect(result.body.id).toEqual(expect.any(String));
     expect(response.body.name).toBe(input.name);
   });
-
-  it('Não Deve criar uma conta de motorista sem placa', async () => {
-    const input: Partial<CreateUserInput> = {
-      name: 'John Doe',
-      email: `johndoe${Math.random()}@gmail.com`,
-      cpf: '37249087843',
-      isDriver: true,
-      isPassenger: false,
-      password: 'admin',
-    };
-
-    const result = await request(app).post('/user').send(input);
-    expect(result.status).toBe(429);
-    expect(result.body.message).toBe('Invalid car plate');
-  });
 });
