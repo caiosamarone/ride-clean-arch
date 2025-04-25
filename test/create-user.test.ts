@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { Account } from '../src/main';
+import { CreateUserInput } from '../src/use-case/create-user-use-case';
 
 describe('create-user', () => {
   it('Deve criar uma conta de passageiro', async () => {
-    const input: Partial<Account> = {
+    const input: Partial<CreateUserInput> = {
       name: 'John Doe',
       email: `johndoe${Math.random()}@gmail.com`,
       cpf: '37249087843',
@@ -20,7 +20,7 @@ describe('create-user', () => {
   });
 
   it('Deve criar uma conta de motorista', async () => {
-    const input: Partial<Account> = {
+    const input: Partial<CreateUserInput> = {
       name: 'John Doe',
       email: `johndose${Math.random()}@gmail.com`,
       cpf: '37249087843',
@@ -38,7 +38,7 @@ describe('create-user', () => {
   });
 
   it('Não Deve criar uma conta de motorista sem placa', async () => {
-    const input: Partial<Account> = {
+    const input: Partial<CreateUserInput> = {
       name: 'John Doe',
       email: `johndoe${Math.random()}@gmail.com`,
       cpf: '37249087843',

@@ -10,22 +10,13 @@ import { makeRequestRideUseCaseFactory } from './factory/make-request-ride-use-c
 import { makeFetchRideByIdUseCaseFactory } from './factory/make-fetch-ride-by-id-use-case-factory';
 import { makeCreateUserUseCaseFactory } from './factory/make-create-user-use-case-factory';
 import { makeFetchUserByIdUseCaseFactory } from './factory/make-fetch-user-by-id-use-case-factory';
+import { CreateUserInput } from './use-case/create-user-use-case';
 
 const app = express();
 app.use(express.json());
 
-export type Account = {
-  name: string;
-  email: string;
-  cpf: string;
-  carPlate: string;
-  isPassenger: boolean;
-  isDriver: boolean;
-  password: string;
-};
-
 app.post('/user', async function (req, res) {
-  const body = req.body as Account;
+  const body = req.body as CreateUserInput;
   try {
     const createUserUseCase = makeCreateUserUseCaseFactory();
     const response = await createUserUseCase.execute(body);
@@ -65,33 +56,9 @@ app.get('/ride/:id', async function (req, res) {
   }
 });
 
-async function validateRideBody({
-  passengerId,
-  from,
-  to,
-}: {
-  passengerId: string;
-  from: {
-    lat: number;
-    long: number;
-  };
-  to: {
-    lat: number;
-    long: number;
-  };
-}) {
-  if (!passengerId) {
-    throw new ValidationError('Invalid passenger ID');
-  }
-  if (!from || !to) {
-    throw new ValidationError('Invalid  location');
-  }
-}
-
 app.post('/ride', async function (req, res) {
   const { passengerId, from, to } = req.body as any;
   try {
-    await validateRideBody({ from, passengerId, to });
     const requestRideUseCase = makeRequestRideUseCaseFactory();
     const response = await requestRideUseCase.execute({
       from,

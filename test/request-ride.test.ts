@@ -1,8 +1,10 @@
 import axios from 'axios';
-import { Account } from '../src/main';
-import db from '../database/pg-promise';
 
-function makePassenger(params?: Partial<Account>): Partial<Account> {
+import { CreateUserInput } from '../src/use-case/create-user-use-case';
+
+function makePassenger(
+  params?: Partial<CreateUserInput>
+): Partial<CreateUserInput> {
   return {
     name: 'John Doe',
     email: `johndoe${Math.random()}@gmail.com`,
@@ -14,7 +16,9 @@ function makePassenger(params?: Partial<Account>): Partial<Account> {
   };
 }
 
-function makeDriver(params?: Partial<Account>): Partial<Account> {
+function makeDriver(
+  params?: Partial<CreateUserInput>
+): Partial<CreateUserInput> {
   return {
     name: 'John Doe',
     email: `johndoe${Math.random()}@gmail.com`,

@@ -1,5 +1,5 @@
-import { User, UserInput, UserTypeEnum } from '../entity/user';
-import { InvalidCarPlate } from '../errors/invalid-car-plate';
+import { User } from '../entity/user';
+
 import { UserAlreadyExists } from '../errors/user-already-exists';
 import { UserRepository } from '../repository/user-repository';
 

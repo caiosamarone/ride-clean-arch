@@ -1,3 +1,5 @@
+import { ValidationError } from '../errors/validation-error';
+
 export enum RideStatusEnum {
   REQUESTED = 'REQUESTED',
   IN_PROGRESS = 'IN_PROGRESS',
@@ -6,7 +8,7 @@ export enum RideStatusEnum {
 }
 
 type RideInput = {
-  id: string;
+  id?: string;
   driverId?: string;
   passengerId: string;
   from: {
@@ -24,25 +26,41 @@ type RideInput = {
 };
 
 export class Ride {
-  public readonly id: string;
-  public readonly driverId?: string;
-  public readonly passengerId: string;
-  public readonly from: { lat: number; long: number };
-  public readonly to: { lat: number; long: number };
-  public readonly status: RideStatusEnum;
-  public readonly fare?: number;
-  public readonly distance?: number;
-  public readonly dateRide: Date;
+  constructor(
+    readonly id: string,
+    readonly passengerId: string,
+    readonly from: { lat: number; long: number },
+    readonly to: { lat: number; long: number },
+    readonly status: RideStatusEnum,
+    readonly dateRide: Date,
+    readonly driverId?: string,
+    readonly fare?: number,
+    readonly distance?: number
+  ) {
+    if (!passengerId) {
+      throw new ValidationError('Invalid pass enger ID');
+    }
+    if (!this.isValidLocation(from)) {
+      throw new ValidationError('Invalid location');
+    }
+  }
+  private isValidLocation(location: { lat: number; long: number }) {
+    return !isNaN(location.lat) || !isNaN(location.long);
+  }
 
-  constructor(input: RideInput) {
-    this.id = input.id;
-    this.driverId = input.driverId;
-    this.passengerId = input.passengerId;
-    this.from = input.from;
-    this.to = input.to;
-    this.status = input.status;
-    this.fare = input.fare;
-    this.distance = input.distance;
-    this.dateRide = input.dateRide;
+  static create(props: RideInput): Ride {
+    const { driverId, passengerId, from, to, status, dateRide } = props;
+    const id = props.id ?? crypto.randomUUID();
+    return new Ride(
+      id,
+      passengerId,
+      from,
+      to,
+      status,
+      dateRide,
+      driverId,
+      props.fare,
+      props.distance
+    );
   }
 }

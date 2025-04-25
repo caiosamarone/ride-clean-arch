@@ -34,12 +34,12 @@ export class RequestRideUseCase {
     await this.checkUserIsPassenger(passengerId);
     await this.checkUserHasNoActiveRide(passengerId);
     const rideId = this.generateRideId();
-    const ride = new Ride({
+    const ride = Ride.create({
       id: rideId,
       passengerId,
       from,
       to,
-      status: RideStatusEnum.REQUESTED,
+      status: RideStatusEnum.IN_PROGRESS,
       dateRide: new Date(),
     });
     await this.rideRepository.create({

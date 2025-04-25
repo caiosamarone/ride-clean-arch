@@ -53,20 +53,21 @@ export class PgPromiseRideRepository implements RideRepository {
     if (!ride) {
       return null;
     }
-    return new Ride({
-      id: ride.ride_id,
-      passengerId: ride.passenger_id,
+    return Ride.create({
+      dateRide: ride.date_ride,
+      driverId: ride.driver_id,
+      fare: ride.fare,
       from: {
         lat: ride.from_lat,
         long: ride.from_long,
       },
+      id: ride.ride_id,
+      passengerId: ride.passenger_id,
+      status: ride.status_ride,
       to: {
         lat: ride.to_lat,
         long: ride.to_long,
       },
-      status: ride.status_ride,
-      dateRide: new Date(ride.date_ride),
-      fare: ride.fare,
       distance: ride.distance,
     });
   }
