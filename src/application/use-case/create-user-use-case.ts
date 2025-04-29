@@ -1,4 +1,5 @@
 import { User } from '../../domain/entity/user';
+import MailerGateway from '../../infra/gateway/mailer-gateway';
 import { UserRepository } from '../../infra/repository/user-repository';
 import { UserAlreadyExists } from '../errors/user-already-exists';
 
@@ -17,7 +18,10 @@ export type CreateUserOutput = {
 };
 
 export class CreateUserUseCase {
-  constructor(private readonly userRepository: UserRepository) {}
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly mailerGateway: MailerGateway
+  ) {}
 
   async execute(input: CreateUserInput): Promise<CreateUserOutput> {
     const existingUser = await this.userRepository.getUserByEmail(input.email);
@@ -35,6 +39,7 @@ export class CreateUserUseCase {
     });
 
     await this.userRepository.create(user);
+    await this.mailerGateway.send(user.email, 'Welcome', '...');
     return {
       userId: user.id,
     };

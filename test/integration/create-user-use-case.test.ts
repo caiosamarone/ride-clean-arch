@@ -4,17 +4,20 @@ import {
 } from '../../src/application/use-case/create-user-use-case';
 import { UserRepository } from '../../src/infra/repository/user-repository';
 import { UserAlreadyExists } from '../../src/application/errors/user-already-exists';
+import { MailerGatewayMemory } from '../../src/infra/gateway/mailer-gateway';
 
 describe('CreateUserUseCase', () => {
   let userRepository: jest.Mocked<UserRepository>;
   let createUserUseCase: CreateUserUseCase;
+  let mailerGateway: jest.Mocked<any>;
 
   beforeEach(() => {
     userRepository = {
       getUserByEmail: jest.fn(),
       create: jest.fn(),
     } as any;
-    createUserUseCase = new CreateUserUseCase(userRepository);
+    const mailerGateway = new MailerGatewayMemory();
+    createUserUseCase = new CreateUserUseCase(userRepository, mailerGateway);
   });
 
   it('Deve criar um usuário com sucesso', async () => {
