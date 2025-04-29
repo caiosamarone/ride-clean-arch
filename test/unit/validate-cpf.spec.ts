@@ -1,4 +1,4 @@
-import { validateCpf } from '../src/helpers/validate-cpf';
+import { validateCpf } from '../../src/helpers/validate-cpf';
 
 test('Deve validar um cpf com o digito diferente de zero', function () {
   const cpf = '97456321558';

@@ -1,6 +1,6 @@
 import { faker } from '@faker-js/faker/.';
-import { Ride, RideStatusEnum } from './ride';
-import { ValidationError } from '../../application/errors/validation-error';
+import { Ride, RideStatusEnum } from '../../src/domain/entity/ride';
+import { ValidationError } from '../../src/application/errors/validation-error';
 
 describe('Ride', () => {
   it('Deve criar uma corrida', () => {

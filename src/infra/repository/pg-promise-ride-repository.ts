@@ -1,14 +1,11 @@
-import { db } from '../database/pg-promise';
+import DatabaseConnection from '../database/pg-promise';
 
 import { Ride, RideStatusEnum } from '../../domain/entity/ride';
 import { NotFoundError } from '../../application/errors/not-found';
 import { CreateRideInput, RideRepository } from './ride-repository';
 
 export class PgPromiseRideRepository implements RideRepository {
-  private db: any;
-  constructor() {
-    this.db = db;
-  }
+  constructor(readonly db: DatabaseConnection) {}
 
   async hasActiveRide(passengerId: string): Promise<boolean> {
     const rides = await this.db.query(

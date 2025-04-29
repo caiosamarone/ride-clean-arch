@@ -1,7 +1,7 @@
 import { faker } from '@faker-js/faker/.';
-import { User } from './user';
+import { User } from '../../src/domain/entity/user';
 import { E } from '@faker-js/faker/dist/airline-BUL6NtOJ';
-import { ValidationError } from '../../application/errors/validation-error';
+import { ValidationError } from '../../src/application/errors/validation-error';
 function generateValidCPF(): string {
   const randomDigits = () => Math.floor(Math.random() * 9);
   const cpf = Array.from({ length: 9 }, randomDigits);

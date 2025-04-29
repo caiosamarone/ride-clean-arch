@@ -1,16 +1,13 @@
-import { db } from '../database/pg-promise';
+import DatabaseConnection from '../database/pg-promise';
 
 import { User, UserTypeEnum } from '../../domain/entity/user';
 import { UserRepository } from './user-repository';
 
 export class PgPromiseUserRepository implements UserRepository {
-  private db: any;
+  constructor(readonly db: DatabaseConnection) {}
 
-  constructor() {
-    this.db = db;
-  }
   async create(user: User): Promise<void> {
-    await db.query(
+    await this.db.query(
       'insert into ccca.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver, password) values ($1, $2, $3, $4, $5, $6, $7, $8)',
       [
         user.id,
