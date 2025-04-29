@@ -10,7 +10,7 @@ describe('RequestRideUseCase', () => {
   beforeEach(() => {
     rideRepository = {
       create: jest.fn(),
-      hasActiveRide: jest.fn(),
+      hasActiveRideByPassengerId: jest.fn(),
     } as any;
     userRepository = {
       getUserById: jest.fn(),
@@ -21,7 +21,7 @@ describe('RequestRideUseCase', () => {
   });
 
   it('Deve criar uma ride com sucesso', async () => {
-    rideRepository.hasActiveRide.mockResolvedValue(false);
+    rideRepository.hasActiveRideByPassengerId.mockResolvedValue(false);
     rideRepository.create.mockResolvedValue(undefined);
     userRepository.getUserById.mockResolvedValue({
       id: 'passenger-uuid',
@@ -38,7 +38,7 @@ describe('RequestRideUseCase', () => {
   });
 
   it('Não deve criar uma ride se já houver uma ride ativa para o passageiro', async () => {
-    rideRepository.hasActiveRide.mockResolvedValue(true);
+    rideRepository.hasActiveRideByPassengerId.mockResolvedValue(true);
     const input = {
       passengerId: 'passenger-uuid',
       from: { lat: -23.5505, long: -46.6333 },

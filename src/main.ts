@@ -7,7 +7,6 @@ import { ExpressAdapter } from './infra/http/http-server';
 import { PgPromiseUserRepository } from './infra/repository/pg-promise-user-repository';
 
 const httpServer = new ExpressAdapter();
-// const httpServer = new HapiAdapter();
 const connection = new PgPromiseAdapter();
 const userRepository = new PgPromiseUserRepository(connection);
 const mailerGateway = new MailerGatewayMemory();

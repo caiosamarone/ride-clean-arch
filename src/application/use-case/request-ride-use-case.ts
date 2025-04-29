@@ -41,9 +41,7 @@ export class RequestRideUseCase {
       status: RideStatusEnum.IN_PROGRESS,
       dateRide: new Date(),
     });
-    await this.rideRepository.create({
-      ride,
-    });
+    await this.rideRepository.create(ride);
     return {
       rideId,
     };
@@ -64,8 +62,9 @@ export class RequestRideUseCase {
   }
 
   private async checkUserHasNoActiveRide(passengerId: string): Promise<void> {
-    const hasActiveRide = await this.rideRepository.hasActiveRide(passengerId);
-    if (hasActiveRide) {
+    const hasActiveRideByPassengerId =
+      await this.rideRepository.hasActiveRideByPassengerId(passengerId);
+    if (hasActiveRideByPassengerId) {
       throw new UserWithActiveRide();
     }
   }

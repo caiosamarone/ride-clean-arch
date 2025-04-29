@@ -1,13 +1,13 @@
 import DatabaseConnection from '../database/pg-promise';
 
 import { Ride, RideStatusEnum } from '../../domain/entity/ride';
-import { NotFoundError } from '../../application/errors/not-found';
-import { CreateRideInput, RideRepository } from './ride-repository';
+
+import { RideRepository } from './ride-repository';
 
 export class PgPromiseRideRepository implements RideRepository {
   constructor(readonly db: DatabaseConnection) {}
 
-  async hasActiveRide(passengerId: string): Promise<boolean> {
+  async hasActiveRideByPassengerId(passengerId: string): Promise<boolean> {
     const rides = await this.db.query(
       'select * from ccca.ride where passenger_id = $1',
       [passengerId]
@@ -18,12 +18,20 @@ export class PgPromiseRideRepository implements RideRepository {
     return false;
   }
 
-  async create(input: CreateRideInput): Promise<void> {
+  async hasActiveRideByDriverId(driverId: string): Promise<boolean> {
+    const [rideData] = await this.db.query(
+      "select 1 from ccca.ride where driver_id = $1 and status not in ('completed', 'cancelled') limit 1",
+      [driverId]
+    );
+    return !!rideData;
+  }
+
+  async create(input: Ride): Promise<void> {
     try {
-      const { passengerId, dateRide, from, id, status, to, fare, distance } =
-        input.ride;
+      const { passengerId, dateRide, from, id, to, fare, distance } = input;
+      const status = RideStatusEnum.REQUESTED;
       await this.db.query(
-        'insert into ccca.ride  (ride_id, passenger_id, from_long, from_lat, to_long, to_lat, status_ride, date_ride) values ($1, $2, $3, $4, $5, $6, $7, $8)',
+        'insert into ccca.ride  (ride_id, passenger_id, from_long, from_lat, to_long, to_lat, status_ride, date_ride, fate, distance) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
         [
           id,
           passengerId,
@@ -50,22 +58,23 @@ export class PgPromiseRideRepository implements RideRepository {
     if (!ride) {
       return null;
     }
-    return Ride.create({
-      dateRide: ride.date_ride,
-      driverId: ride.driver_id,
-      fare: ride.fare,
-      from: {
-        lat: ride.from_lat,
-        long: ride.from_long,
-      },
-      id: ride.ride_id,
-      passengerId: ride.passenger_id,
-      status: ride.status_ride,
-      to: {
-        lat: ride.to_lat,
-        long: ride.to_long,
-      },
-      distance: ride.distance,
-    });
+    return new Ride(
+      ride.ride_id,
+      ride.passenger_id,
+      { lat: ride.from_lat, long: ride.from_long },
+      { lat: ride.to_lat, long: ride.to_long },
+      ride.status_ride,
+      ride.date_ride,
+      ride.driver_id,
+      ride.fare,
+      ride.distance
+    );
+  }
+
+  async update(ride: Ride): Promise<void> {
+    await this.db.query(
+      'update ccca.ride set status = $1, driver_id = $2, distance = $3, fare = $4 where ride_id = $5',
+      [ride.getStatus(), ride.getRideId(), ride.distance, ride.fare, ride.id]
+    );
   }
 }

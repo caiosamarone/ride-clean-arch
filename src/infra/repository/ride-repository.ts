@@ -1,11 +1,9 @@
 import { Ride } from '../../domain/entity/ride';
 
-export type CreateRideInput = {
-  ride: Ride;
-};
-
 export interface RideRepository {
-  create(input: CreateRideInput): Promise<void>;
+  create(input: Ride): Promise<void>;
   get(rideId: string): Promise<Ride | null>;
-  hasActiveRide(passengerId: string): Promise<boolean>;
+  update(ride: Ride): Promise<void>;
+  hasActiveRideByPassengerId(passengerId: string): Promise<boolean>;
+  hasActiveRideByDriverId(driverId: string): Promise<boolean>;
 }

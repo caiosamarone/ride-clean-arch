@@ -27,3 +27,11 @@ create table ccca.ride (
 	date_ride timestamp
 
 );
+
+create table ccca.position (
+	position_id uuid,
+	ride_id uuid,
+	lat numeric,
+	long numeric,
+	date timestamp
+);
