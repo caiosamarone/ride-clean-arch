@@ -34,6 +34,7 @@ describe('User', () => {
     });
     expect(user).toBeInstanceOf(User);
     expect(user.id).toBeDefined();
+    expect(user.getName()).toBeDefined();
   });
 
   it('Não deve criar um usuário com nome inválido', () => {

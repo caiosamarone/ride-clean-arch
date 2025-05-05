@@ -1,6 +1,11 @@
 import { InvalidCarPlate } from '../../application/errors/invalid-car-plate';
 import { ValidationError } from '../../application/errors/validation-error';
 import { validateCpf } from '../../helpers/validate-cpf';
+import { CarPlate } from '../value-objects/car-plate';
+import Cpf from '../value-objects/cpf';
+import { Email } from '../value-objects/email';
+import { Name } from '../value-objects/name';
+import { Password } from '../value-objects/password';
 
 export enum UserTypeEnum {
   PASSENGER = 'passenger',
@@ -17,37 +22,26 @@ export type UserInput = {
 };
 
 export class User {
+  private name: Name;
+  private email: Email;
+  private cpf: Cpf;
+  private carPlate: CarPlate;
+  private password: Password;
+
   constructor(
     readonly id: string,
-    readonly name: string,
-    readonly email: string,
-    readonly carPlate: string,
+    name: string,
+    email: string,
+    carPlate: string,
     readonly type: UserTypeEnum,
-    readonly password: string,
-    readonly cpf: string
+    password: string,
+    cpf: string
   ) {
-    if (!this.isValidName(name)) {
-      throw new ValidationError('Invalid name');
-    }
-    if (!this.isValidEmail(email)) {
-      throw new ValidationError('Invalid e-mail');
-    }
-    if (!validateCpf(cpf)) {
-      throw new ValidationError('Invalid CPF');
-    }
-    if (type === UserTypeEnum.DRIVER && !this.isValidCarPlate(carPlate)) {
-      throw new InvalidCarPlate();
-    }
-  }
-
-  isValidName(name: string) {
-    return name?.match(/[a-zA-Z] [a-zA-Z]+/);
-  }
-  isValidEmail(email: string) {
-    return email?.match(/^(.+)@(.+)$/);
-  }
-  isValidCarPlate(carPlate: string) {
-    return carPlate?.match(/[A-Z]{3}[0-9]{4}/);
+    this.name = new Name(name);
+    this.email = new Email(email);
+    this.cpf = new Cpf(cpf);
+    this.carPlate = new CarPlate(carPlate);
+    this.password = new Password(password);
   }
 
   static create(props: UserInput): User {
@@ -57,5 +51,22 @@ export class User {
       ? UserTypeEnum.PASSENGER
       : UserTypeEnum.DRIVER;
     return new User(id, name, email, carPlate, type, password, cpf);
+  }
+
+  getName() {
+    return this.name.getValue();
+  }
+  getEmail() {
+    return this.email.getValue();
+  }
+
+  getPassword() {
+    return this.password.getValue();
+  }
+  getCpf() {
+    return this.cpf.getValue();
+  }
+  getCarPlate() {
+    return this.carPlate.getValue();
   }
 }

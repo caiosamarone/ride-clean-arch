@@ -11,13 +11,13 @@ export class PgPromiseUserRepository implements UserRepository {
       'insert into ccca.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver, password) values ($1, $2, $3, $4, $5, $6, $7, $8)',
       [
         user.id,
-        user.name,
-        user.email,
-        user.cpf,
-        user.carPlate,
+        user.getName(),
+        user.getEmail(),
+        user.getCpf(),
+        user.getCarPlate(),
         user.type === UserTypeEnum.PASSENGER,
         user.type === UserTypeEnum.DRIVER,
-        user.password,
+        user.getPassword(),
       ]
     );
   }

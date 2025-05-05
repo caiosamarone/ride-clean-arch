@@ -39,7 +39,7 @@ export class CreateUserUseCase {
     });
 
     await this.userRepository.create(user);
-    await this.mailerGateway.send(user.email, 'Welcome', '...');
+    await this.mailerGateway.send(user.getEmail(), 'Welcome', '...');
     return {
       userId: user.id,
     };

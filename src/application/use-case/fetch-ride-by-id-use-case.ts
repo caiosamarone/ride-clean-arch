@@ -48,8 +48,8 @@ export class FecthRideByIdUseCase {
       },
       fare: ride.fare,
       passengerId: ride.passengerId,
-      passengerName: passenger.name,
-      status: ride.status,
+      passengerName: passenger.getName(),
+      status: ride.getStatus(),
       to: {
         lat: ride.to.lat,
         long: ride.to.long,

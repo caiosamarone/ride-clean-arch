@@ -14,6 +14,7 @@ describe('[POST] /user', () => {
       password: 'admin',
     };
     const result = await axios.post(`${BASE_URL}/user`, input);
+    console.log('TESTE', result.data);
     const account = await axios.get(`${BASE_URL}/user/${result.data.userId}`);
     expect(result.data.userId).toEqual(expect.any(String));
     expect(account.data.name).toBe(input.name);
