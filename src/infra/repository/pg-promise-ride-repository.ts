@@ -28,21 +28,20 @@ export class PgPromiseRideRepository implements RideRepository {
 
   async create(input: Ride): Promise<void> {
     try {
-      const { passengerId, dateRide, from, id, to, fare, distance } = input;
       const status = RideStatusEnum.REQUESTED;
       await this.db.query(
         'insert into ccca.ride  (ride_id, passenger_id, from_long, from_lat, to_long, to_lat, status_ride, date_ride, fate, distance) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)',
         [
-          id,
-          passengerId,
-          from.long,
-          from.lat,
-          to.long,
-          to.lat,
+          input.getRideId(),
+          input.getPassengerId(),
+          input.getFrom().getLong(),
+          input.getFrom().getLat(),
+          input.getTo().getLong(),
+          input.getTo().getLat(),
           status,
-          dateRide,
-          fare,
-          distance,
+          input.dateRide,
+          input.getFare(),
+          input.getDistance(),
         ]
       );
     } catch (error) {
@@ -61,8 +60,10 @@ export class PgPromiseRideRepository implements RideRepository {
     return new Ride(
       ride.ride_id,
       ride.passenger_id,
-      { lat: ride.from_lat, long: ride.from_long },
-      { lat: ride.to_lat, long: ride.to_long },
+      ride.from_lat,
+      ride.from_long,
+      ride.to_lat,
+      ride.to_long,
       ride.status_ride,
       ride.date_ride,
       ride.driver_id,
@@ -74,7 +75,13 @@ export class PgPromiseRideRepository implements RideRepository {
   async update(ride: Ride): Promise<void> {
     await this.db.query(
       'update ccca.ride set status = $1, driver_id = $2, distance = $3, fare = $4 where ride_id = $5',
-      [ride.getStatus(), ride.getRideId(), ride.distance, ride.fare, ride.id]
+      [
+        ride.getStatus(),
+        ride.getRideId(),
+        ride.distance,
+        ride.fare,
+        ride.getRideId(),
+      ]
     );
   }
 }

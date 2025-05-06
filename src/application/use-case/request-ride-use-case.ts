@@ -8,14 +8,10 @@ import { UserWithActiveRide } from '../errors/user-with-active-ride';
 
 export type RequestRideInput = {
   passengerId: string;
-  from: {
-    lat: number;
-    long: number;
-  };
-  to: {
-    lat: number;
-    long: number;
-  };
+  fromLat: number;
+  fromLong: number;
+  toLat: number;
+  toLong: number;
 };
 
 export type RequestRideOutput = {
@@ -29,15 +25,17 @@ export class RequestRideUseCase {
   ) {}
 
   async execute(input: RequestRideInput): Promise<RequestRideOutput> {
-    const { passengerId, from, to } = input;
+    const { passengerId, fromLat, fromLong, toLat, toLong } = input;
     await this.checkUserIsPassenger(passengerId);
     await this.checkUserHasNoActiveRide(passengerId);
     const rideId = this.generateRideId();
     const ride = Ride.create({
       id: rideId,
       passengerId,
-      from,
-      to,
+      fromLat,
+      fromLong,
+      toLat,
+      toLong,
       status: RideStatusEnum.IN_PROGRESS,
       dateRide: new Date(),
     });

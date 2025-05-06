@@ -22,8 +22,10 @@ function makeRide(props: Partial<RideInput>): Ride {
   return Ride.create({
     id: faker.string.uuid(),
     passengerId: faker.string.uuid(),
-    from: { lat: -23.5505, long: -46.6333 },
-    to: { lat: -23.5505, long: -46.6332 },
+    fromLat: -23.5505,
+    fromLong: -46.6333,
+    toLat: -23.5505,
+    toLong: -46.6332,
     status: RideStatusEnum.IN_PROGRESS,
     fare: faker.number.float({ min: 10, max: 100 }),
     distance: faker.number.float({ min: 1, max: 50 }),
@@ -62,7 +64,7 @@ describe('AcceptRideUseCase', () => {
       .mockResolvedValue(false);
     await acceptRideUseCase.execute({
       driverId: 'fake',
-      rideId: ride.id,
+      rideId: ride.getRideId(),
     });
     expect(rideRepository.update).toHaveBeenCalledWith(ride);
   });

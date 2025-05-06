@@ -29,8 +29,10 @@ describe('RequestRideUseCase', () => {
     } as any);
     const input = {
       passengerId: 'passenger-uuid',
-      from: { lat: -23.5505, long: -46.6333 },
-      to: { lat: -23.5505, long: -46.6332 },
+      fromLat: -23.5505,
+      fromLong: -46.6333,
+      toLat: -23.5505,
+      toLong: -46.6332,
     };
     const output = await requestRideUseCase.execute(input);
     expect(output.rideId).toEqual(expect.any(String));
@@ -41,8 +43,10 @@ describe('RequestRideUseCase', () => {
     rideRepository.hasActiveRideByPassengerId.mockResolvedValue(true);
     const input = {
       passengerId: 'passenger-uuid',
-      from: { lat: -23.5505, long: -46.6333 },
-      to: { lat: -23.5505, long: -46.6332 },
+      fromLat: -23.5505,
+      fromLong: -46.6333,
+      toLat: -23.5505,
+      toLong: -46.6332,
     };
     await expect(requestRideUseCase.execute(input)).rejects.toThrow();
     expect(rideRepository.create).not.toHaveBeenCalled();

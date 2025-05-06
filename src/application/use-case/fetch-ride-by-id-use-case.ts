@@ -11,14 +11,10 @@ type FetchRideByIdOutput = {
   rideId: string;
   passengerId: string;
   passengerName: string;
-  from: {
-    lat: number;
-    long: number;
-  };
-  to: {
-    lat: number;
-    long: number;
-  };
+  fromLat: number;
+  fromLong: number;
+  toLat: number;
+  toLong: number;
   status: RideStatusEnum;
   fare?: number;
   distance?: number;
@@ -36,26 +32,24 @@ export class FecthRideByIdUseCase {
     if (!ride) {
       throw new NotFoundError('Ride not found');
     }
-    const passenger = await this.userRepository.getUserById(ride.passengerId);
+    const passenger = await this.userRepository.getUserById(
+      ride.getPassengerId()
+    );
     if (!passenger) {
       throw new NotFoundError('User not found');
     }
     return {
       dateRide: ride.dateRide,
-      from: {
-        lat: ride.from.lat,
-        long: ride.from.long,
-      },
+      fromLat: ride.getFrom().getLat(),
+      fromLong: ride.getFrom().getLong(),
+      toLat: ride.getTo().getLat(),
+      toLong: ride.getTo().getLong(),
       fare: ride.fare,
-      passengerId: ride.passengerId,
+      passengerId: ride.getPassengerId(),
       passengerName: passenger.getName(),
       status: ride.getStatus(),
-      to: {
-        lat: ride.to.lat,
-        long: ride.to.long,
-      },
       distance: ride.distance,
-      rideId: ride.id,
+      rideId: ride.getRideId(),
     };
   }
 }

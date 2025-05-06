@@ -1,4 +1,6 @@
 import { ValidationError } from '../../application/errors/validation-error';
+import { Coord } from '../value-objects/cood';
+import { UUID } from '../value-objects/UUID';
 
 export enum RideStatusEnum {
   REQUESTED = 'REQUESTED',
@@ -11,14 +13,10 @@ export enum RideStatusEnum {
 export type RideInput = {
   id?: string;
   passengerId: string;
-  from: {
-    lat: number;
-    long: number;
-  };
-  to: {
-    lat: number;
-    long: number;
-  };
+  fromLat: number;
+  fromLong: number;
+  toLat: number;
+  toLong: number;
   status: RideStatusEnum;
   fare?: number;
   distance?: number;
@@ -26,31 +24,40 @@ export type RideInput = {
 };
 
 export class Ride {
+  private from: Coord;
+  private to: Coord;
+  private id: UUID;
+  private passengerId: UUID;
+  private driverId?: UUID;
+
   constructor(
-    readonly id: string,
-    readonly passengerId: string,
-    readonly from: { lat: number; long: number },
-    readonly to: { lat: number; long: number },
+    id: string,
+    passengerId: string,
+    fromLat: number,
+    fromLong: number,
+    toLat: number,
+    toLong: number,
     private status: RideStatusEnum,
     readonly dateRide: Date,
-    private driverId: string | null,
+    driverId?: string | null,
     readonly fare?: number,
     readonly distance?: number
   ) {
     if (!passengerId) {
       throw new ValidationError('Invalid passenger ID');
     }
-    if (!this.isValidLocation(from)) {
-      throw new ValidationError('Invalid location');
-    }
-    this.driverId = driverId ?? null;
+    if (driverId) this.driverId = new UUID(driverId);
+    this.passengerId = new UUID(passengerId);
+    this.id = new UUID(id);
+    this.from = new Coord(fromLat, fromLong);
+    this.to = new Coord(toLat, toLong);
   }
   private isValidLocation(location: { lat: number; long: number }) {
     return !isNaN(location.lat) || !isNaN(location.long);
   }
 
   accept(driverId: string) {
-    this.driverId = driverId;
+    this.driverId = new UUID(driverId);
     if (this.status !== RideStatusEnum.REQUESTED)
       throw new Error('Invalid status');
     this.status = RideStatusEnum.ACCEPTED;
@@ -67,13 +74,16 @@ export class Ride {
   updatePosition(lat: number, long: number) {}
 
   static create(props: RideInput): Ride {
-    const { passengerId, from, to, status, dateRide } = props;
+    const { passengerId, fromLat, toLat, fromLong, toLong, status, dateRide } =
+      props;
     const id = props.id ?? crypto.randomUUID();
     return new Ride(
       id,
       passengerId,
-      from,
-      to,
+      fromLat,
+      fromLong,
+      toLat,
+      toLong,
       status,
       dateRide,
       null,
@@ -91,15 +101,15 @@ export class Ride {
   }
 
   getRideId() {
-    return this.id;
+    return this.id.getValue();
   }
 
   getPassengerId() {
-    return this.passengerId;
+    return this.passengerId.getValue();
   }
 
   getDriverId() {
-    return this.driverId ?? null;
+    return this.driverId?.getValue();
   }
 
   getFrom() {

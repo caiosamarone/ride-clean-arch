@@ -1,6 +1,3 @@
-import { InvalidCarPlate } from '../../application/errors/invalid-car-plate';
-import { ValidationError } from '../../application/errors/validation-error';
-import { validateCpf } from '../../helpers/validate-cpf';
 import { CarPlate } from '../value-objects/car-plate';
 import Cpf from '../value-objects/cpf';
 import { Email } from '../value-objects/email';
