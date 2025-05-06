@@ -10,7 +10,7 @@ export class PgPromiseUserRepository implements UserRepository {
     await this.db.query(
       'insert into ccca.account (account_id, name, email, cpf, car_plate, is_passenger, is_driver, password) values ($1, $2, $3, $4, $5, $6, $7, $8)',
       [
-        user.id,
+        user.getId(),
         user.getName(),
         user.getEmail(),
         user.getCpf(),

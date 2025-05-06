@@ -33,7 +33,7 @@ describe('User', () => {
       isPassenger: false,
     });
     expect(user).toBeInstanceOf(User);
-    expect(user.id).toBeDefined();
+    expect(user.getId()).toBeDefined();
     expect(user.getName()).toBeDefined();
   });
 

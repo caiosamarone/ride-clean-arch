@@ -6,6 +6,7 @@ import Cpf from '../value-objects/cpf';
 import { Email } from '../value-objects/email';
 import { Name } from '../value-objects/name';
 import { Password } from '../value-objects/password';
+import { UUID } from '../value-objects/UUID';
 
 export enum UserTypeEnum {
   PASSENGER = 'passenger',
@@ -22,6 +23,7 @@ export type UserInput = {
 };
 
 export class User {
+  private id: UUID;
   private name: Name;
   private email: Email;
   private cpf: Cpf;
@@ -29,7 +31,7 @@ export class User {
   private password: Password;
 
   constructor(
-    readonly id: string,
+    id: string,
     name: string,
     email: string,
     carPlate: string,
@@ -37,6 +39,7 @@ export class User {
     password: string,
     cpf: string
   ) {
+    this.id = new UUID(id);
     this.name = new Name(name);
     this.email = new Email(email);
     this.cpf = new Cpf(cpf);
@@ -46,11 +49,15 @@ export class User {
 
   static create(props: UserInput): User {
     const { carPlate, cpf, email, name, password } = props;
-    const id = crypto.randomUUID();
+    const id = UUID.create();
     const type = props.isPassenger
       ? UserTypeEnum.PASSENGER
       : UserTypeEnum.DRIVER;
-    return new User(id, name, email, carPlate, type, password, cpf);
+    return new User(id.getValue(), name, email, carPlate, type, password, cpf);
+  }
+
+  getId() {
+    return this.id.getValue();
   }
 
   getName() {

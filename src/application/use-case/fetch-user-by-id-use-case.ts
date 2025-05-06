@@ -21,7 +21,7 @@ export class FetchUserByIdUseCase {
       throw new Error('User not found');
     }
     return {
-      id: user.id,
+      id: user.getId(),
       name: user.getName(),
       email: user.getEmail(),
       cpf: user.getCpf(),
