@@ -39,9 +39,9 @@ export class Ride {
     toLong: number,
     private status: RideStatusEnum,
     readonly dateRide: Date,
-    driverId?: string | null,
-    readonly fare?: number,
-    readonly distance?: number
+    driverId: string | null,
+    readonly fare: number,
+    readonly distance: number
   ) {
     if (!passengerId) {
       throw new ValidationError('Invalid passenger ID');
@@ -51,9 +51,6 @@ export class Ride {
     this.id = new UUID(id);
     this.from = new Coord(fromLat, fromLong);
     this.to = new Coord(toLat, toLong);
-  }
-  private isValidLocation(location: { lat: number; long: number }) {
-    return !isNaN(location.lat) || !isNaN(location.long);
   }
 
   accept(driverId: string) {
@@ -71,11 +68,11 @@ export class Ride {
     this.status = RideStatusEnum.IN_PROGRESS;
   }
 
-  updatePosition(lat: number, long: number) {}
-
   static create(props: RideInput): Ride {
     const { passengerId, fromLat, toLat, fromLong, toLong, status, dateRide } =
       props;
+    const fare = 0;
+    const distance = 0;
     const id = props.id ?? crypto.randomUUID();
     return new Ride(
       id,
@@ -87,8 +84,8 @@ export class Ride {
       status,
       dateRide,
       null,
-      props.fare,
-      props.distance
+      fare,
+      distance
     );
   }
 

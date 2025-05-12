@@ -1,4 +1,6 @@
 import { RideStatusEnum } from '../../domain/entity/ride';
+import DistanceCalculator from '../../domain/service/distance-calculator';
+import { PositionRepository } from '../../infra/repository/position-repository';
 import { RideRepository } from '../../infra/repository/ride-repository';
 import { UserRepository } from '../../infra/repository/user-repository';
 import { NotFoundError } from '../errors/not-found';
@@ -24,7 +26,8 @@ type FetchRideByIdOutput = {
 export class FecthRideByIdUseCase {
   constructor(
     private readonly rideRepository: RideRepository,
-    private readonly userRepository: UserRepository
+    private readonly userRepository: UserRepository,
+    private readonly positionRepository: PositionRepository
   ) {}
 
   async execute(input: FetchRideByIdInput): Promise<FetchRideByIdOutput> {
@@ -38,6 +41,9 @@ export class FecthRideByIdUseCase {
     if (!passenger) {
       throw new NotFoundError('User not found');
     }
+    const positions = await this.positionRepository.listByRideId(
+      ride.getRideId()
+    );
     return {
       dateRide: ride.dateRide,
       fromLat: ride.getFrom().getLat(),
@@ -48,7 +54,7 @@ export class FecthRideByIdUseCase {
       passengerId: ride.getPassengerId(),
       passengerName: passenger.getName(),
       status: ride.getStatus(),
-      distance: ride.distance,
+      distance: DistanceCalculator.calculateDistanceBetweenPositions(positions),
       rideId: ride.getRideId(),
     };
   }

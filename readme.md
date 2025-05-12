@@ -1,3 +1,8 @@
+todo:
+
+- [] Testes update ride position
+- [] Teste service distance calculator
+
 # Ride Clean Architecture
 
 Este projeto é uma aplicação backend desenvolvida com **Node.js** e **TypeScript**, seguindo os princípios de **Clean Architecture**. O objetivo é fornecer uma estrutura robusta e escalável para gerenciar corridas (rides) e usuários, com foco em boas práticas de design de software.
