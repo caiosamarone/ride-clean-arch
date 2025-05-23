@@ -50,7 +50,7 @@ export class FecthRideByIdUseCase {
       fromLong: ride.getFrom().getLong(),
       toLat: ride.getTo().getLat(),
       toLong: ride.getTo().getLong(),
-      fare: ride.fare,
+      fare: ride.getFare(),
       passengerId: ride.getPassengerId(),
       passengerName: passenger.getName(),
       status: ride.getStatus(),

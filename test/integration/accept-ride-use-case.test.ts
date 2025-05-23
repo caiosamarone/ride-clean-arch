@@ -18,7 +18,7 @@ function makeUser(): User {
   );
 }
 
-function makeRide(props: Partial<RideInput>): Ride {
+export function makeRide(props: Partial<RideInput>): Ride {
   return Ride.create({
     id: faker.string.uuid(),
     passengerId: faker.string.uuid(),

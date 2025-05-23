@@ -1,6 +1,8 @@
 import { ValidationError } from '../../application/errors/validation-error';
+import DistanceCalculator from '../service/distance-calculator';
 import { Coord } from '../value-objects/cood';
 import { UUID } from '../value-objects/UUID';
+import { Position } from './position';
 
 export enum RideStatusEnum {
   REQUESTED = 'REQUESTED',
@@ -40,8 +42,8 @@ export class Ride {
     private status: RideStatusEnum,
     readonly dateRide: Date,
     driverId: string | null,
-    readonly fare: number,
-    readonly distance: number
+    private fare: number,
+    private distance: number
   ) {
     if (!passengerId) {
       throw new ValidationError('Invalid passenger ID');
@@ -66,6 +68,20 @@ export class Ride {
     }
 
     this.status = RideStatusEnum.IN_PROGRESS;
+  }
+
+  finish(positions: Position[]) {
+    this.status = RideStatusEnum.COMPLETED;
+    for (const [index, position] of positions.entries()) {
+      const nextPosition = positions[index + 1];
+      if (!nextPosition) break;
+      const distance = DistanceCalculator.calculateDistanceBetweenPositions([
+        position,
+        nextPosition,
+      ]);
+      this.distance += distance;
+    }
+    this.fare = this.distance * 2.1;
   }
 
   static create(props: RideInput): Ride {

@@ -78,8 +78,8 @@ export class PgPromiseRideRepository implements RideRepository {
       [
         ride.getStatus(),
         ride.getRideId(),
-        ride.distance,
-        ride.fare,
+        ride.getDistance(),
+        ride.getFare(),
         ride.getRideId(),
       ]
     );
