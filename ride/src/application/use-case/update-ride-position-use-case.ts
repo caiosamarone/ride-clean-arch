@@ -7,6 +7,7 @@ type UpdateRidePositionUseCaseInput = {
   rideId: string;
   lat: number;
   long: number;
+  date: Date;
 };
 export class UpdateRidePositionUseCase {
   constructor(
@@ -22,7 +23,12 @@ export class UpdateRidePositionUseCase {
     if (ride.getStatus() !== RideStatusEnum.IN_PROGRESS) {
       throw new Error('Ride is not in progress');
     }
-    const position = Position.create(input.rideId, input.lat, input.long);
+    const position = Position.create(
+      input.rideId,
+      input.lat,
+      input.long,
+      input.date
+    );
     await this.positionRepository.savePosition(position);
   }
 }

@@ -40,6 +40,7 @@ describe('UpdatePositionUseCase', () => {
       lat: -23.55052,
       long: -46.633309,
       rideId: 'fake-ride-id',
+      date: new Date(),
     });
 
     expect(positionsRepositorySpy).toHaveBeenCalledWith(

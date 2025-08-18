@@ -1,5 +1,6 @@
 import { ValidationError } from '../../application/errors/validation-error';
 import DistanceCalculator from '../service/distance-calculator';
+import { FareCalculatorFactory } from '../service/fare-calculator';
 import { Coord } from '../value-objects/cood';
 import { UUID } from '../value-objects/UUID';
 import { Position } from './position';
@@ -80,8 +81,10 @@ export class Ride {
         nextPosition,
       ]);
       this.distance += distance;
+      this.fare += FareCalculatorFactory.create(position.date).calculate(
+        distance
+      );
     }
-    this.fare = this.distance * 2.1;
   }
 
   static create(props: RideInput): Ride {

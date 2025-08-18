@@ -42,7 +42,7 @@ describe('FinishRideUseCase', () => {
     );
   });
 
-  it('should finish a ride', async () => {
+  it('should finish a ride in normal time', async () => {
     const ride = makeRide({ id: 'ride-id' });
     const positions = [
       makePosition('position-id-1', ride.getRideId(), -25.4289, -49.2733),
@@ -65,6 +65,86 @@ describe('FinishRideUseCase', () => {
         id: expect.objectContaining({ value: 'ride-id' }),
         status: 'COMPLETED',
         fare: 21,
+        distance: 10,
+      })
+    );
+  });
+
+  it('should finish a ride in overnight', async () => {
+    const ride = makeRide({ id: 'ride-id' });
+    const positions = [
+      makePosition(
+        'position-id-1',
+        ride.getRideId(),
+        -25.4289,
+        -49.2733,
+        new Date('2023-10-02T22:00:00')
+      ),
+      makePosition(
+        'position-id-2',
+        ride.getRideId(),
+        -25.3389,
+        -49.2733,
+        new Date('2023-10-02T22:30:00')
+      ),
+    ];
+
+    jest.spyOn(rideRepository, 'get').mockResolvedValue(ride);
+    jest.spyOn(positionRepository, 'listByRideId').mockResolvedValue(positions);
+
+    await finishRideUseCase.execute({
+      rideId: ride.getRideId(),
+    });
+
+    expect(rideRepository.get).toHaveBeenCalledWith(ride.getRideId());
+    expect(positionRepository.listByRideId).toHaveBeenCalledWith(
+      ride.getRideId()
+    );
+    expect(rideRepository.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: expect.objectContaining({ value: 'ride-id' }),
+        status: 'COMPLETED',
+        fare: 39,
+        distance: 10,
+      })
+    );
+  });
+
+  it('should finish a ride in sunday', async () => {
+    const ride = makeRide({ id: 'ride-id' });
+    const positions = [
+      makePosition(
+        'position-id-1',
+        ride.getRideId(),
+        -25.4289,
+        -49.2733,
+        new Date('2023-10-01T22:00:00')
+      ),
+      makePosition(
+        'position-id-2',
+        ride.getRideId(),
+        -25.3389,
+        -49.2733,
+        new Date('2023-10-01T22:30:00')
+      ),
+    ];
+
+    jest.spyOn(rideRepository, 'get').mockResolvedValue(ride);
+    jest.spyOn(positionRepository, 'listByRideId').mockResolvedValue(positions);
+
+    await finishRideUseCase.execute({
+      rideId: ride.getRideId(),
+    });
+
+    expect(rideRepository.get).toHaveBeenCalledWith(ride.getRideId());
+    expect(positionRepository.listByRideId).toHaveBeenCalledWith(
+      ride.getRideId()
+    );
+    expect(rideRepository.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: expect.objectContaining({ value: 'ride-id' }),
+        status: 'COMPLETED',
+        fare: 50,
         distance: 10,
       })
     );

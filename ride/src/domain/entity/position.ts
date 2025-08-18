@@ -18,9 +18,13 @@ export class Position {
     this.coord = new Coord(lat, long);
   }
 
-  static create(rideId: string, lat: number, long: number) {
+  static create(
+    rideId: string,
+    lat: number,
+    long: number,
+    date: Date = new Date()
+  ) {
     const positionId = UUID.create();
-    const date = new Date();
     return new Position(positionId.getValue(), rideId, lat, long, date);
   }
 

@@ -1,7 +1,5 @@
 import DatabaseConnection from '../database/pg-promise';
 
-import { User, UserTypeEnum } from '../../domain/entity/user';
-import { UserRepository } from './user-repository';
 import { PositionRepository } from './position-repository';
 import { Position } from '../../domain/entity/position';
 

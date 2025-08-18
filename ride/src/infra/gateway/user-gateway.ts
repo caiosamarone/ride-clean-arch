@@ -1,4 +1,4 @@
-import axios from 'axios';
+import HttpClient from '../http/http-client';
 
 export interface UserGateway {
   getUserById(userId: string): Promise<GetUserByIdOutput>;
@@ -6,15 +6,20 @@ export interface UserGateway {
 }
 
 export class UserGatewayHttp implements UserGateway {
+  constructor(readonly httpClient: HttpClient) {}
+
   async getUserById(userId: string): Promise<any> {
-    const response = await axios.get<GetUserByIdOutput>(
+    const response = await this.httpClient.get(
       `http://localhost:3000/user/${userId}`
     );
-    return response.data;
+    return response;
   }
   async signup(input: CreateUserInput): Promise<any> {
-    const response = await axios.post('http://localhost:3000/user', input);
-    return response.data;
+    const response = await this.httpClient.post(
+      'http://localhost:3000/user',
+      input
+    );
+    return response;
   }
 }
 
