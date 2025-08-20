@@ -2,22 +2,25 @@ import { Transaction } from '../../domain/entity/transaction';
 import { PaymentGateway } from '../../infra/gateway/payment-gateway';
 import TransactionRepository from '../../infra/repository/transaction-repository';
 
-type Input = {
-  rideId: string;
-  amount: number;
-};
-
 type Output = {
   transactionId: string;
+  rideId: string;
+  amount: number;
+  date: Date;
+  status: string;
 };
 
-export class ProcessPaymentUseCase {
+export class GetTransactionUseCase {
   constructor(private readonly transactionRepository: TransactionRepository) {}
 
-  async execute(input: Input): Promise<Output> {
-    const transaction = Transaction.create(input.rideId, input.amount);
-    await this.transactionRepository.saveTransaction(transaction);
+  async execute(transactionId: string): Promise<Output> {
+    const transaction =
+      await this.transactionRepository.getTransactionById(transactionId);
     return {
+      amount: transaction.amount,
+      date: transaction.date,
+      rideId: transaction.getRideId(),
+      status: transaction.status,
       transactionId: transaction.getTransactionId(),
     };
   }
