@@ -1,12 +1,14 @@
 import { Transaction } from '../../domain/entity/transaction';
 import DatabaseConnection from '../database/pg-promise';
+import { inject } from '../di/registry';
 import TransactionRepository from './transaction-repository';
 
 export class PgPromiseTransactionRepository implements TransactionRepository {
-  constructor(readonly db: DatabaseConnection) {}
+  @inject('connection')
+  connection!: DatabaseConnection;
 
   async saveTransaction(transaction: Transaction): Promise<void> {
-    await this.db.query(
+    await this.connection.query(
       'insert into ccca.transaction (transaction_id, ride_id, amount, status, date) values ($1, $2, $3, $4, $5)',
       [
         transaction.getTransactionId(),
@@ -18,7 +20,7 @@ export class PgPromiseTransactionRepository implements TransactionRepository {
     );
   }
   async getTransactionById(transactionId: string): Promise<Transaction> {
-    const [transactionData] = await this.db.query(
+    const [transactionData] = await this.connection.query(
       'select * from ccca.transaction where transaction_id = $1',
       [transactionId]
     );

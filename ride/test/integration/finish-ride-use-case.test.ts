@@ -1,14 +1,22 @@
 import { FinishRideUseCase } from '../../src/application/use-case/finish-ride-use-case';
-import { ProcessRidePaymentUseCase } from '../../src/application/use-case/process-ride-payment-use-case';
+import { ProcessPaymentUseCase } from '../../src/application/use-case/process-ride-payment-use-case';
+
 import { Position } from '../../src/domain/entity/position';
+import { UUID } from '../../src/domain/value-objects/UUID';
+import DatabaseConnection, {
+  PgPromiseAdapter,
+} from '../../src/infra/database/pg-promise';
+import Registry from '../../src/infra/di/registry';
+import { PgPromiseTransactionRepository } from '../../src/infra/repository/pg-promise-transaction-repository';
 import { PositionRepository } from '../../src/infra/repository/position-repository';
 import { RideRepository } from '../../src/infra/repository/ride-repository';
 import { makeRide } from './accept-ride-use-case.test';
 
 let finishRideUseCase: FinishRideUseCase;
+let connection: DatabaseConnection;
 let positionRepository: PositionRepository;
 let rideRepository: RideRepository;
-let processRideUseCase: ProcessRidePaymentUseCase;
+let processRideUseCase: ProcessPaymentUseCase;
 
 function makePosition(
   positionId?: string,
@@ -28,6 +36,16 @@ function makePosition(
 
 describe('FinishRideUseCase', () => {
   beforeEach(() => {
+    connection = new PgPromiseAdapter();
+    Registry.getInstance().provide('connection', connection);
+    Registry.getInstance().provide(
+      'transactionRepository',
+      new PgPromiseTransactionRepository()
+    );
+    Registry.getInstance().provide(
+      'processPayment',
+      new ProcessPaymentUseCase()
+    );
     rideRepository = {
       get: jest.fn(),
       update: jest.fn(),
@@ -42,8 +60,13 @@ describe('FinishRideUseCase', () => {
     );
   });
 
+  afterAll(() => {
+    connection.close();
+  });
+
   it('should finish a ride in normal time', async () => {
-    const ride = makeRide({ id: 'ride-id' });
+    const id = UUID.create().getValue();
+    const ride = makeRide({ id });
     const positions = [
       makePosition('position-id-1', ride.getRideId(), -25.4289, -49.2733),
       makePosition('position-id-2', ride.getRideId(), -25.3389, -49.2733),
@@ -62,7 +85,7 @@ describe('FinishRideUseCase', () => {
     );
     expect(rideRepository.update).toHaveBeenCalledWith(
       expect.objectContaining({
-        id: expect.objectContaining({ value: 'ride-id' }),
+        id: expect.objectContaining({ value: id }),
         status: 'COMPLETED',
         fare: 21,
         distance: 10,
@@ -71,7 +94,8 @@ describe('FinishRideUseCase', () => {
   });
 
   it('should finish a ride in overnight', async () => {
-    const ride = makeRide({ id: 'ride-id' });
+    const id = UUID.create().getValue();
+    const ride = makeRide({ id });
     const positions = [
       makePosition(
         'position-id-1',
@@ -102,7 +126,7 @@ describe('FinishRideUseCase', () => {
     );
     expect(rideRepository.update).toHaveBeenCalledWith(
       expect.objectContaining({
-        id: expect.objectContaining({ value: 'ride-id' }),
+        id: expect.objectContaining({ value: id }),
         status: 'COMPLETED',
         fare: 39,
         distance: 10,
@@ -111,7 +135,8 @@ describe('FinishRideUseCase', () => {
   });
 
   it('should finish a ride in sunday', async () => {
-    const ride = makeRide({ id: 'ride-id' });
+    const id = UUID.create().getValue();
+    const ride = makeRide({ id });
     const positions = [
       makePosition(
         'position-id-1',
@@ -142,7 +167,7 @@ describe('FinishRideUseCase', () => {
     );
     expect(rideRepository.update).toHaveBeenCalledWith(
       expect.objectContaining({
-        id: expect.objectContaining({ value: 'ride-id' }),
+        id: expect.objectContaining({ value: id }),
         status: 'COMPLETED',
         fare: 50,
         distance: 10,

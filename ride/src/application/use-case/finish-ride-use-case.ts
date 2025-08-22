@@ -1,14 +1,18 @@
 import { RideStatusEnum } from '../../domain/entity/ride';
+import { inject } from '../../infra/di/registry';
 
 import { PositionRepository } from '../../infra/repository/position-repository';
 import { RideRepository } from '../../infra/repository/ride-repository';
-import { ProcessRidePaymentUseCase } from './process-ride-payment-use-case';
+import { ProcessPaymentUseCase } from './process-ride-payment-use-case';
 
 type Input = {
   rideId: string;
 };
 
 export class FinishRideUseCase {
+  @inject('processPayment')
+  processPayment!: ProcessPaymentUseCase;
+
   constructor(
     private readonly rideRepository: RideRepository,
     private readonly positionRepository: PositionRepository
@@ -25,6 +29,10 @@ export class FinishRideUseCase {
     );
     ride.finish(positions);
     await this.rideRepository.update(ride);
+    await this.processPayment.execute({
+      rideId: ride.getRideId(),
+      amount: ride.getFare(),
+    });
     //   const succesInPayment = await this.processRidePaymentUseCase.execute({
     //     amount: ride.getFare(),
     //     rideId: ride.getRideId(),

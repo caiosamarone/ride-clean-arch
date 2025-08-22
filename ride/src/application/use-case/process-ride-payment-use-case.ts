@@ -1,4 +1,5 @@
 import { Transaction } from '../../domain/entity/transaction';
+import { inject } from '../../infra/di/registry';
 import { PaymentGateway } from '../../infra/gateway/payment-gateway';
 import TransactionRepository from '../../infra/repository/transaction-repository';
 
@@ -12,7 +13,8 @@ type Output = {
 };
 
 export class ProcessPaymentUseCase {
-  constructor(private readonly transactionRepository: TransactionRepository) {}
+  @inject('transactionRepository')
+  transactionRepository!: TransactionRepository;
 
   async execute(input: Input): Promise<Output> {
     const transaction = Transaction.create(input.rideId, input.amount);
