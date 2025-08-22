@@ -3,12 +3,15 @@ import { ProcessPaymentUseCase } from '../../src/application/use-case/process-ri
 import { UUID } from '../../src/domain/value-objects/UUID';
 import { PgPromiseAdapter } from '../../src/infra/database/pg-promise';
 import Registry from '../../src/infra/di/registry';
+import ORM from '../../src/infra/orm/ORM';
 import { PgPromiseTransactionRepository } from '../../src/infra/repository/pg-promise-transaction-repository';
 
 describe('ProcessPaymentUseCase', () => {
   it('deve processar o pagamento', async function () {
     const connection = new PgPromiseAdapter();
     Registry.getInstance().provide('connection', connection);
+    Registry.getInstance().provide('orm', new ORM(connection));
+
     Registry.getInstance().provide(
       'transactionRepository',
       new PgPromiseTransactionRepository()

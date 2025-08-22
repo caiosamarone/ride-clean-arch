@@ -1,35 +1,27 @@
 import { Transaction } from '../../domain/entity/transaction';
 import DatabaseConnection from '../database/pg-promise';
 import { inject } from '../di/registry';
+import ORM, { TransactionModel } from '../orm/ORM';
 import TransactionRepository from './transaction-repository';
 
 export class PgPromiseTransactionRepository implements TransactionRepository {
-  @inject('connection')
-  connection!: DatabaseConnection;
+  @inject('orm')
+  orm!: ORM;
 
   async saveTransaction(transaction: Transaction): Promise<void> {
-    await this.connection.query(
-      'insert into ccca.transaction (transaction_id, ride_id, amount, status, date) values ($1, $2, $3, $4, $5)',
-      [
-        transaction.getTransactionId(),
-        transaction.getRideId(),
-        transaction.amount,
-        transaction.status,
-        transaction.date,
-      ]
-    );
+    await this.orm.save(TransactionModel.fromAggregate(transaction));
   }
   async getTransactionById(transactionId: string): Promise<Transaction> {
-    const [transactionData] = await this.connection.query(
-      'select * from ccca.transaction where transaction_id = $1',
-      [transactionId]
+    const transaction = await this.orm.get(
+      TransactionModel,
+      'transaction_id',
+      transactionId
     );
-    return new Transaction(
-      transactionData.transaction_id,
-      transactionData.ride_id,
-      parseFloat(transactionData.amount),
-      transactionData.status,
-      transactionData.date
-    );
+    return transaction.toAggregate();
+  }
+
+  async getTransactionByRideId(rideId: string): Promise<Transaction> {
+    const transaction = await this.orm.get(TransactionModel, 'ride_id', rideId);
+    return transaction.toAggregate();
   }
 }
